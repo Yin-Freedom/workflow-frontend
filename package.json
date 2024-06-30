@@ -1,6 +1,6 @@
 {
-  "name": "pure-admin-thin",
-  "version": "5.6.0",
+  "name": "workflow-frontend",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -34,6 +34,7 @@
   "dependencies": {
     "@logicflow/core": "^1.2.27",
     "@logicflow/extension": "^1.2.27",
+    "codemirror": "^5.59.2",
     "moment": "^2.30.1",
     "@pureadmin/descriptions": "^1.2.1",
     "@pureadmin/table": "^3.1.2",
