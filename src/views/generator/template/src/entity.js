@@ -1,26 +1,35 @@
-import * as StringUtil from "../../util/StringUtil.js";
-export const entity = classInfo =>
+export const entity = (classInfo) =>
   `
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.io.Serializable;
+
 /**
  * @author ${classInfo.authorName}
  */
 @Entity
-@Table(name="${classInfo.underlineClassName}")
 public class ${classInfo.pascalCaseClassName} implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
-    @Column(name = "${StringUtil.camelCaseToUnderline(classInfo.primaryKey)}")
     private Long ${classInfo.primaryKey};
-${classInfo.fieldList
-  .map(field => {
+    ${classInfo.fieldList.map(field => {
+    if (classInfo.primaryKey === field.camelCaseName) {
+      return '';
+    }
+    if (classInfo.excludeList.includes(field.camelCaseName)) {
+      return '';
+    }
     return `
-    // ${field.comment}
-    @Column(name = "${field.underlineName}")
+    /**
+     * ${field.comment}
+     */
+    @Column()
     private String ${field.camelCaseName};
     `;
-  })
-  .join("")}
+  }).join("")}
 }
 `;

@@ -13,7 +13,7 @@ export function parseSql(sql) {
     pascalCaseClassName: "",
     underlineClassName: "",
     primaryKey: "",
-    fieldbist: [],
+    fieldList: [],
     excludeList: []
   };
 
@@ -24,7 +24,7 @@ export function parseSql(sql) {
     if (lineInfo.type === "attr") {
       entity.fieldList.push(lineInfo);
     } else if (lineInfo.type === "tableName") {
-      let tableNameRegx = /create table (if not exists)?(\w+)/i;
+      let tableNameRegx = /create table (if not exists )?(\w+)/i;
       let matchArr = line.match(tableNameRegx);
       let tableName = matchArr[matchArr.length - 1];
       entity.className = StringUtil.underlineToCamelCase(tableName);
@@ -32,10 +32,11 @@ export function parseSql(sql) {
       entity.pascalCaseClassName = StringUtil.toPascalCase(tableName);
       entity.underlineClassName = tableName;
     } else if (lineInfo.type === "primaryKey") {
-      let primaryKey = line.match(/primary\s+key\((\w+)\)/i)[1];
+      let primaryKey = line.match(/primary\s+key\s?\((\w+)\)/i)[1];
       entity.primaryKey = StringUtil.underlineToCamelCase(primaryKey);
     }
   });
+  console.log(entity);
   return entity;
 }
 
@@ -53,11 +54,11 @@ export function parseLine(line) {
     lineInfo.type = "blank";
     return lineInfo;
   }
-  if (/create table (if not exists)?(\w+)/i.test(line)) {
+  if (/create table (if not exists )?(\w+)/i.test(line)) {
     lineInfo.type = "tableName";
     return lineInfo;
   }
-  if (/primary\s+key\((\w+)\)/i.test(line)) {
+  if (/primary\s+key\s?\((\w+)\)/i.test(line)) {
     lineInfo.type = "primaryKey";
     return lineInfo;
   }

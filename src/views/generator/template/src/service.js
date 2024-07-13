@@ -1,4 +1,4 @@
-export const service = classInfo =>
+export const service = (classInfo) =>
   `
 ${classInfo.authorName}
 `;
