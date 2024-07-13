@@ -1,44 +1,61 @@
 <template>
   <div>
-    <FieldSet :configs="configs[0]">
-      <textarea
-        id="inputData"
-        v-model="inputData"
-        type="textarea"
-        :placeholder="sqlExample"
-        rows="10"
-      />
-    </FieldSet>
+    <Fieldset :configs="configs[0]"><textarea id="inputData" v-model="inputData" type="textarea"
+        :placeholder="sqlExample" rows="10" /></Fieldset>
+    <Fieldset :configs="configs[1]"><el-form :model="formData" :inline="true" label-width="140px" label-position="right"
+        class="form"><el-form-item label="packageName" prop="packageName"><el-input
+            v-model="formData.packageName"></el-input></el-form-item>
+        <el-form-item label="authorName" prop="authorName">
+          <el-input v-model="formData.authorName"></el-input></el-form-item><el-select v-model="formData.excludeList"
+          placeholder="Select" style="width: 240px"><el-option v-for="(item, index) in excludelistOptions" :key="index"
+            :label="item.label" :value="item.value" /></el-select>
+        <el-form-item label="isSwagger" prop="isSwagger">
+          <el-switch v-model="formData.isSwagger"></el-switch>
+        </el-form-item>
+        <el-form-item label="isLombok" prop="isLombok"><el-switch v-model="formData.isLombok"></el-switch>
+        </el-form-item>
+      </el-form>
+    </Fieldset>
 
-    <FieldSet :configs="configs[1]">
+    <Fieldset :configs="configs[2]">
       <el-tabs v-model="activeKey" type="border-card">
-        <el-tab-pane
-          v-for="(item, index) in items"
-          :key="index"
-          :label="item.name"
-          :name="item.name"
-        >
-          <el-button
-            v-for="(btn, index) in item.children"
-            :key="index"
-            type="primary"
-            plain
-            @click="btnClick(btn)"
-            >{{ btn }}</el-button
-          >
+        <el-tab-pane v-for="(item, index) in items" :key="index" :label="item.name" :name="item.name">
+          <div>
+            <span>template</span><el-divider direction="vertical" />
+            <el-button v-for="(btn, index) in item.children" :key="index" type="primary"
+              plain@click="btnClick(btn,'template', item.name)">{{ btn }}</el-button>
+          </div>
+          <el-divider style="margin:10px 0" />
+          <div><span>preview&nbsp</span><el-divider direction="vertical" /><el-button
+              v-for="(btn, index) in item.children" :key="index" type="primary"
+              plain@click="btnClick(btn, 'preview', item.name)">{{ btn }}</el-button></div>
         </el-tab-pane>
       </el-tabs>
-    </FieldSet>
-
-    <FieldSet :configs="configs[2]">
-      <textarea id="outputData" v-model="outputData" type="textarea" rows="5" />
-    </FieldSet>
+    </Fieldset>
+    <Fieldset :configs="configs[3]">
+      <textarea id="outputData" v-model="outputData" type="textarea" rows="5">
+      </textarea>
+    </Fieldset>
   </div>
-  <!-- <div :v-if="showPreviewWindow">
-    <ReDialog>
-    </ReDialog>
-  </div> -->
 </template>
+
+<style scoped>
+.form {
+  background-color: white;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.el-form--inline .el-form-item {
+  flex: 1 0 30%;
+  align-items: center;
+}
+
+form-item-full {
+  flex: 100% !important;
+}
+</style>
 
 <script setup>
 import "./index.css";
@@ -47,6 +64,7 @@ import "codemirror/lib/codemirror.css";
 import "codemirror/addon/hint/show-hint.css";
 import "codemirror/mode/sql/sql.js";
 
+import lodash from "lodash";
 import { ref, onMounted, onUnmounted, h } from "vue";
 import * as template from "./template";
 import { ElMessage } from "element-plus";
@@ -55,32 +73,41 @@ import { FieldSet } from "@/components/FieldSet";
 import { parseSql } from "./util/parseSql";
 import { addDialog } from "@/components/ReDialog";
 import Detail from "./detail.vue";
+import * from http from "@/api/generator";
 
 defineOptions({
   name: "generator"
 });
-let showPreviewWindow = true;
+function getWebData() {
+
+}
 const configs = ref([
   {
-    title: "输入",
+    title: "Input",
     collapsed: true,
     items: ""
   },
   {
-    title: "模板选择",
+    title: "Choose Template",
     collapsed: true,
     items: ""
   },
   {
-    title: "输出",
+    title: "Output",
     collapsed: true,
     items: ""
   }
 ]);
+let formData = ref({
+  packageName: "",
+  authorName: "yinhuidong",
+  excludeList: ""
+});
 const items = ref([
   { name: "pojo", children: ["entity", "dao", "service", "serviceImpl"] },
   { name: "custom", children: ["add"] },
-  { name: "preview", children: ["entity", "dao", "service", "serviceImpl"] }
+  { name: "preview", children: ["entity", "dao", "service", "serviceImpl"] },
+  { name: "custom", children: customList }
 ]);
 const activeKey = ref("pojo");
 let sqlExample = `create table test (

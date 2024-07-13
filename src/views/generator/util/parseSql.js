@@ -9,10 +9,12 @@ export function parseSql(sql) {
     dabaseType: "oracle",
     // camelCase
     className: "",
+    camelCaseClassName: "",
     pascalCaseClassName: "",
     underlineClassName: "",
     primaryKey: "",
-    fieldList: []
+    fieldbist: [],
+    excludeList: []
   };
 
   sql = sql.trim();
@@ -26,6 +28,7 @@ export function parseSql(sql) {
       let matchArr = line.match(tableNameRegx);
       let tableName = matchArr[matchArr.length - 1];
       entity.className = StringUtil.underlineToCamelCase(tableName);
+      entity.camelCaseClassName = StringUtil.underlineToCamelCase(tableName);
       entity.pascalCaseClassName = StringUtil.toPascalCase(tableName);
       entity.underlineClassName = tableName;
     } else if (lineInfo.type === "primaryKey") {
