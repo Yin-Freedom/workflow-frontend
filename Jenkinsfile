@@ -1,7 +1,7 @@
 pipeline {
     agent none
     stages {
-        stage("编译") {
+        stage("compile") {
             agent {
                 docker {
                     image "gplane/pnpm:9-node20"
@@ -13,19 +13,19 @@ pipeline {
                 }
             }
             steps {
-                echo "正在构建项目"
+                echo "start build"
                 sh "node -v && pnpm -v"
                 // 设置npm镜像地址
                 // sh "pnpm config get registry"
                 // sh "pnpm config set registry http://rdsource.tp-link.com.cn/npm-official/"
                 sh "cd ${env.WORKSPACE}/${srcPath} && pnpm install --no-frozen-lockfile && pnpm build"
-                echo "构建项目成功"
+                echo "build success"
             }
         }
-        stage("镜像构建发布") {
+        stage("image build and post") {
             agent any
             steps {
-                echo "项目名称: ${projectName}, ARAS: ${version}, BL: ${domain}"
+                echo "project name: ${projectName}, ARAS: ${version}, BL: ${domain}"
                 // sh "chmod at+x ${env.WORKSPACE}/${srcPath}/build_kubernetes.sh"
                 // sh "${env.WORKSPACE}/${srcPath}/build_kubernetes.sh"
             }
@@ -41,7 +41,7 @@ pipeline {
         success {
             emailext attachLog: true,
             recipientProviders: [[$class: "CulpritsRecipientProvider"], [$class: "DevelopersRecipientProvider"]],
-            subject: "部署成功: ${currentBuild.fullDisplayName}, ChangeID:${env.BUILD_ID}",
+            subject: "deploy success: ${currentBuild.fullDisplayName}, ChangeID:${env.BUILD_ID}",
             body: "Everything is OK with ${currentBuild.fullDisplayName}\n耗费时长:${fcurrentBuild.durationString}\n点击右边的URL ${env.BUILD_URL} 或者查看附件阅读关于本次部署的信息"
         }
     }
