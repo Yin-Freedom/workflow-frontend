@@ -34,14 +34,14 @@ pipeline {
     post {
         failure {
             emailext attachLog: true,
-            recipientProviders: [[$class: "CulpritsRecipientProvider"], [Sclass: "FailingTestSuspectsRecipientProvider"]],
-            subject: "Failed Pipeline: ${currentBuild. fullDisplayName},ChangeID:${env.CHANGE_ID}",
+            recipientProviders: [[$class: "CulpritsRecipientProvider"], [$class: "FailingTestSuspectsRecipientProvider"]],
+            subject: "Failed Pipeline: ${currentBuild.fullDisplayName},ChangeID:${env.CHANGE_ID}",
             body: "Something is wrong with ${env.BUILD_URL}"
         }
         success {
             emailext attachLog: true,
             recipientProviders: [[$class: "CulpritsRecipientProvider"], [$class: "DevelopersRecipientProvider"]],
-            subject: "部署成功: ${currentBuild. fullDisplayName}, ChangeID:${env.BUILD_ID}",
+            subject: "部署成功: ${currentBuild.fullDisplayName}, ChangeID:${env.BUILD_ID}",
             body: "Everything is OK with ${currentBuild.fullDisplayName}\n耗费时长:${fcurrentBuild.durationString}\n点击右边的URL ${env.BUILD_URL} 或者查看附件阅读关于本次部署的信息"
         }
     }
