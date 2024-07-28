@@ -4,7 +4,7 @@ pipeline {
         stage("compile") {
             agent {
                 // Using a remote Docker server
-                docker.withServer('tcp://139.159.142.19:2375') {
+                docker {
                     image "gplane/pnpm:9-node20"
                     // If it is important to keep the workspace synchronized with other stages, use reuseNode true.
                     reuseNode true
