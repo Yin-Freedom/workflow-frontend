@@ -3,11 +3,9 @@ pipeline {
     stages {
         stage("compile") {
             agent {
-                docker {
+                // Using a remote Docker server
+                docker.withServer('tcp://139.159.142.19:2375') {
                     image "gplane/pnpm:9-node20"
-                    // Pipeline supports adding custom arguments that are passed to Docker, allowing users to specify custom Docker Volumes to mount, 
-                    // which can be used for caching data on the agent between Pipeline runs.
-                    // args "-v /root/dms/.m2:/root/.m2"
                     // If it is important to keep the workspace synchronized with other stages, use reuseNode true.
                     reuseNode true
                 }
