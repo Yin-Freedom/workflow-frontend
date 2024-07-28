@@ -1,5 +1,3 @@
-// Using a remote Docker server
-env.DOCKER_HOST = 'tcp://139.159.142.19:2375'
 
 pipeline {
     agent none
@@ -7,7 +5,7 @@ pipeline {
         stage("compile") {
             agent {
                 docker {
-                    image "gplane/pnpm:9-node20"
+                    image "dhub.kubesre.xyz/gplane/pnpm"
                     // If it is important to keep the workspace synchronized with other stages, use reuseNode true.
                     reuseNode true
                 }
