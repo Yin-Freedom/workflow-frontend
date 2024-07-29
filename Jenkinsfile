@@ -5,16 +5,16 @@ pipeline {
         appName = "${projectName}-${version}"
     }
     stages {
-        stage("compile") {
+        stage("编译") {
             steps {
                 echo "本地构建"
             }
         }
-        stage("image build and post") {
+        stage("镜像构建和发布") {
             agent any
             steps {
                 echo "开始构建镜像"
-                echo "project name: ${projectName}, ARAS: ${version}, BL: ${domain}"
+                echo "项目名称: ${projectName}, 版本号: ${version}, 域名: ${domain}"
                 sh "pwd"
                 dir("${env.WORKSPACE}") {
                     // 修改文件
