@@ -1,8 +1,8 @@
 pipeline {
     agent none
     environment {
-        imageName: "${projectName}:${version}"
-        appName: "${projectName}-${version}"
+        imageName = "${projectName}:${version}"
+        appName = "${projectName}-${version}"
     }
     stages {
         stage("compile") {
