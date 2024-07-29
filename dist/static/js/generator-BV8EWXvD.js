@@ -1,0 +1,1 @@
+import{cB as t}from"./index-DfmCOzbx.js";const a=e=>t.request("post","/api/generator/findByPage",{data:e}),n=e=>t.request("post","/api/generator/saveOrUpdate",{data:e}),o=e=>t.request("post","/api/generator/deleteByIds",{data:e}),u=e=>t.request("post","/api/generator/findByTemplateName",{data:e});export{u as a,o as d,a as f,n as s};
