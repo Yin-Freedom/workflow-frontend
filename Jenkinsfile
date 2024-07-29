@@ -1,31 +1,41 @@
-
 pipeline {
     agent none
+    environment {
+        imageName: "${projectName}:${version}"
+        appName: "${projectName}-${version}"
+    }
     stages {
         stage("compile") {
-            agent {
-                docker {
-                    image "dhub.kubesre.xyz/gplane/pnpm"
-                    // If it is important to keep the workspace synchronized with other stages, use reuseNode true.
-                    reuseNode true
-                }
-            }
             steps {
-                echo "start build"
-                sh "node -v && pnpm -v"
-                // 设置npm镜像地址
-                // sh "pnpm config get registry"
-                // sh "pnpm config set registry http://rdsource.tp-link.com.cn/npm-official/"
-                sh "cd ${env.WORKSPACE}/${srcPath} && pnpm install --no-frozen-lockfile && pnpm build"
-                echo "build success"
+                echo "本地构建"
             }
         }
         stage("image build and post") {
             agent any
             steps {
+                echo "开始构建镜像"
                 echo "project name: ${projectName}, ARAS: ${version}, BL: ${domain}"
-                // sh "chmod at+x ${env.WORKSPACE}/${srcPath}/build_kubernetes.sh"
-                // sh "${env.WORKSPACE}/${srcPath}/build_kubernetes.sh"
+                sh "pwd"
+                dir("${env.WORKSPACE}") {
+                    // 修改文件
+                    sh "sed -i s/backendDomain/${backendDomain}/g k8s/docker/root.conf"
+                }
+                dir("${env.WORKSPACE}/${srcPath}/dist") {
+                    sh "tar -zcf ../ROOT.tar.gz ."
+                }
+                dir("${env.WORKSPACE}/${srcPath}") {
+                    sh "mv ROOT.tar.gz ${env.WORKSPACE}/k8s/docker/ROOT.tar.gz"
+                }
+                dir("${env.WORKSPACE}/k8s/docker") {
+                    sh "docker rmi ${imageName} || true"
+                    sh "docker build -t ${imageName}"
+                }
+                echo "镜像构建完成"
+                echo "开始部署容器"
+                dir("${env.WORKSPACE}/k8s/docker") {
+                    sh "docker run -d --name ${appName} -p 3000:8080 ${env.imageName}"
+                }
+                echo "部署容器完成"
             }
         }
     }
