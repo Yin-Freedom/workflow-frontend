@@ -33,6 +33,8 @@ pipeline {
                 echo "镜像构建完成"
                 echo "开始部署容器"
                 dir("${env.WORKSPACE}/k8s/docker") {
+                    sh "docker stop container ${appName}"
+                    sh "docker rm container ${appName}"
                     sh "docker run -d --name ${appName} -p 3000:8080 ${env.imageName}"
                 }
                 echo "部署容器完成"
