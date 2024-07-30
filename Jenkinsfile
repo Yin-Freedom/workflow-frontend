@@ -50,7 +50,7 @@ pipeline {
             emailext attachLog: true,
             recipientProviders: [[$class: "CulpritsRecipientProvider"], [$class: "DevelopersRecipientProvider"]],
             subject: "deploy success: ${currentBuild.fullDisplayName}, ChangeID:${env.BUILD_ID}",
-            body: "Everything is OK with ${currentBuild.fullDisplayName}\n耗费时长:${fcurrentBuild.durationString}\n点击右边的URL ${env.BUILD_URL} 或者查看附件阅读关于本次部署的信息"
+            body: "Everything is OK with ${currentBuild.fullDisplayName}\n耗费时长:${currentBuild.durationString}\n点击右边的URL ${env.BUILD_URL} 或者查看附件阅读关于本次部署的信息"
         }
     }
 }
