@@ -35,7 +35,12 @@
 }
 
 .login-form {
-  width: 360px;
+  width: 400px;
+  flex: 0 1 auto;
+  padding: 40px;
+  border-radius: 6px;
+  box-shadow: 1px 1px 8px #aaa6a6;
+  box-sizing: border-box;
 }
 
 .avatar {
@@ -59,7 +64,7 @@
   }
 
   .login-form {
-    width: 290px;
+    width: 400px;
   }
 
   .login-form h2 {
@@ -68,7 +73,7 @@
   }
 
   .img img {
-    width: 360px;
+    width: 400px;
   }
 
   .avatar {

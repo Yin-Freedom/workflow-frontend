@@ -5,7 +5,7 @@ export default {
   meta: {
     icon: "ri:information-line",
     // showLink: false,
-    title: "异常页面",
+    title: "代码生成",
     rank: 2
   },
   children: [
