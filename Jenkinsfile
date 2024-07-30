@@ -28,7 +28,7 @@ pipeline {
                 }
                 dir("${env.WORKSPACE}/k8s/docker") {
                     sh "docker rmi ${imageName} || true"
-                    sh "docker build -t ${imageName}"
+                    sh "docker build -t ${imageName} ."
                 }
                 echo "镜像构建完成"
                 echo "开始部署容器"
